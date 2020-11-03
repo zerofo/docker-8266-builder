@@ -1,5 +1,9 @@
 # docker-8266-builder
 
+## 目前run.sh 仅适用于 有docker的 linux。 windows 需要自己写 run脚本
+
+
+
 8266's code modify from https://github.com/zerofo/ESP8266-WEB-FTP-DNS-Basico 
 
 ## 修改config.txt 修改对应参数

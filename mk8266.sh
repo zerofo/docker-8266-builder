@@ -12,6 +12,11 @@ for f in `ls /mk8266/*.manifest`;
 do
     cacheF=$f;
 done;
+WIFISSID="PS4-672_zerofo";
+WIFIPass="";
+IP="9,9,9,9";
+UserOffline="ok";
+source /config.txt;
 
 echo ${cacheF};
 cd /mk8266;
@@ -27,14 +32,18 @@ do
     fi;
     if [[ ! $f =~ ".css" || ! $f =~ ".gz" ]];then
         if [[ $f =~ "index" ]];then 
-            sed -i "s/<head>/<head>\n    <script>if (location.pathname != '\/' && location.pathname != '\/index.html') location\.href=location\.origin;<\/script>/g" /mk8266/index.html;
+            echo "test";
+            if [[ $UserOffline == "ok" ]];then
+
+               sed -i "s/<head>/<head>\n    <script>if (location.pathname != '\/' && location.pathname != '\/index.html') location\.href=location\.origin;<\/script>/g" /mk8266/index.html;
+            fi
+        #else
         fi;
         gzip $f -f;
     fi;
 done;
 echo "FALLBACK:" >> ${cacheF};
 echo ". index.html" >> ${cacheF};
-source /config.txt;
 cd /Ps4-wifi-http;
 sed -i "s/.*char\*\ WIFISSID.*/\ \ \ \ \ char\*\ WIFISSID\ =\ \"${WIFISSID}\"\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
 sed -i "s/.*char\*\ WIFIPass.*/\ \ \ \ \ char\*\ WIFIPass\ =\ \"${WIFIPass}\"\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;

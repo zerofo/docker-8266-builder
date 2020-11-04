@@ -34,8 +34,7 @@ do
         if [[ $f =~ "index" ]];then 
             echo "test";
             if [[ $UserOffline == "ok" ]];then
-
-               sed -i "s/<head>/<head>\n    <script>if (location.pathname != '\/' && location.pathname != '\/index.html') location\.href=location\.origin;<\/script>/g" /mk8266/index.html;
+                sed -i "s/<head>/<head>\n    <script>if (location.pathname != '\/' \&\& location.pathname != '\/index.html') location\.href=location\.origin;<\/script>/g" /mk8266/index.html;
             fi
         #else
         fi;

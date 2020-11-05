@@ -33,12 +33,14 @@ do
     if [[ ! $f =~ ".css" || ! $f =~ ".gz" ]];then
         if [[ $f =~ "index" ]];then 
             echo "test";
-            if [[ $UserOffline == "ok" ]];then
+            if [[ $UserOffline == "y" ]];then
                 sed -i "s/<head>/<head>\n    <script>if (location.pathname != '\/' \&\& location.pathname != '\/index.html') location\.href=location\.origin;<\/script>/g" /mk8266/index.html;
             fi
         #else
         fi;
+        if [[ $compress == "y" ]];then
         gzip $f -f;
+        fi;
     fi;
 done;
 echo "FALLBACK:" >> ${cacheF};

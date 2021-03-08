@@ -2,5 +2,4 @@ WIFISSID="PS4-672_zerofo"; #wifi名称;
 WIFIPass=""; #wifi密码;
 IP="9,9,9,9"; #IP地址;
 binname="ps4672-zerofo"; #输出名称
-UserOffline="y" #用户指南支持离线缓存 并断网 
 compress="y" #进行gzip 压缩

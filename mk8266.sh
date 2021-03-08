@@ -15,7 +15,6 @@ done;
 WIFISSID="PS4-672_zerofo";
 WIFIPass="";
 IP="9,9,9,9";
-UserOffline="ok";
 source /config.txt;
 
 echo ${cacheF};
@@ -33,9 +32,6 @@ do
     if [[ ! $f =~ ".css" || ! $f =~ ".gz" ]];then
         if [[ $f =~ "index" ]];then 
             echo "test";
-            if [[ $UserOffline == "y" ]];then
-                sed -i "s/<head>/<head>\n    <script>if (location.pathname != '\/' \&\& location.pathname != '\/index.html') location\.href=location\.origin;<\/script>/g" /mk8266/index.html;
-            fi
         #else
         fi;
         if [[ $compress == "y" ]];then

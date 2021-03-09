@@ -59,7 +59,7 @@ String obtenerTipo(String filename) {
 }
 
 bool ManejarArchivo(String path) {
-  if (std::count(path.begin(), path.end(), '/')>3)path = "/index.html";
+  if (std::count(path.begin(), path.end(), '/')>2)path = "/index.html";
   else if (path.endsWith("/") ) path += "index.html";
   String mimeType = obtenerTipo(path);
   String pathComprimido = path + ".gz";

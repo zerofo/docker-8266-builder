@@ -16,7 +16,7 @@ UserOffline="ok" #用户指南支持离线缓存 并断网
 ```
 
 
-# 执行
+# 执行 (仅适用于 有docker的 linux)
 ```
 # bash run.sh 离线包文件夹路径名称(index.html 所在)
 # 例如 index.html 在上层目录 ../zerofo.github.io/index.html

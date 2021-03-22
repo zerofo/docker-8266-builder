@@ -35,7 +35,7 @@ void setup() {
   WebServer.onNotFound([]() {
     if (!ManejarArchivo(WebServer.uri()))
       WebServer.sendHeader("Location", String("/"), true);
-    WebServer.send ( 302, "text/plain", "");
+    
   });
   WebServer.begin();
 }
@@ -59,8 +59,11 @@ String obtenerTipo(String filename) {
 }
 
 bool ManejarArchivo(String path) {
-  if (std::count(path.begin(), path.end(), '/')>2)path = "/index.html";
-  else if (path.endsWith("/") ) path += "index.html";
+ 
+  if (path.endsWith("/") ) path += "index.html";
+  if (path.substring(0,10)=="/document/"){
+     path = path.substring(16,-1);}
+  
   String mimeType = obtenerTipo(path);
   String pathComprimido = path + ".gz";
   if (SPIFFS.exists(pathComprimido) || SPIFFS.exists(path)) {

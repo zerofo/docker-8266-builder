@@ -12,11 +12,31 @@ for f in `ls /mk8266/*.manifest`;
 do
     cacheF=$f;
 done;
+
+if [[ -z $cacheF ]]; then
+    echo "该网站没有找到manifest格式的离线缓存文件";
+    echo "";
+    echo "请 修改对应的 cache/appcache 后缀的文件";
+    echo "";
+    echo " 与之对应的 html 文件 第一二行 文件名";
+    echo "";
+    echo " 修改后从试";
+    echo "";
+    if read -t 5 -p "强制忽略 请输入（Y）否则5秒后退出:" name
+    then 
+        echo "强制继续";
+    else
+        echo "超时退出"
+        exit;
+    fi;
+fi
+
+
 WIFISSID="PS4-672_zerofo";
 WIFIPass="";
 IP="9,9,9,9";
 source /config.txt;
-echo "config"
+echo "config:"
 cat /config.txt;
 echo ${WIFISSID};
 echo ${WIFIPass};

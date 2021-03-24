@@ -1,14 +1,27 @@
+#include <BufferedPrint.h>
+#include <FreeStack.h>
+#include <MinimumSerial.h>
+#include <RingBuf.h>
+#include <SdFat.h>
+#include <SdFatConfig.h>
+#include <sdios.h>
+
+
+
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <DNSServer.h>
-
+#include <LittleFS.h>
 #define LED_BUILTIN 2
-
+#define SDFAT_FILE_TYPE 1
 const byte PuertoDNS = 53;
 const byte PuertoHTTP = 80;
-
+bool hasSD=0;
+#define SD_CS_PIN D8
+//const int CS = D8; //SD Pinout:  D5 = CLK , D6 = MISO , D7 = MOSI , D8 = CS
+SdFat  SD;
 struct ArchivoConfiguracion {
-  char* WIFISSID = "PS4-672_by_zerofo";
+  char* WIFISSID = "demo";
   char* WIFIPass = "";
   IPAddress IP = IPAddress(9, 9, 9, 9);
   IPAddress Subnet = IPAddress(255, 255, 255, 0);
@@ -23,11 +36,20 @@ void ConfigurarWIFIy() {
   WiFi.softAPConfig(Configuracion.IP, Configuracion.IP, Configuracion.Subnet);
   WiFi.softAP(Configuracion.WIFISSID);
 }
-
 void setup() {
-  SPIFFS.begin();
+  if (SD.begin(SD_CS_PIN))
+  {hasSD = true;
+  }else{
+   Serial.println(" not  sd ");
+    hasSD = false;
+    LittleFS.begin();
+  }
+
+  //Serial.begin(115200);
+  //Serial.setDebugOutput(true);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, 0);
+
   ConfigurarWIFIy();
   DNS.setTTL(300);
   DNS.setErrorReplyCode(DNSReplyCode::ServerFailure);
@@ -35,43 +57,62 @@ void setup() {
   WebServer.onNotFound([]() {
     if (!ManejarArchivo(WebServer.uri()))
       WebServer.sendHeader("Location", String("/"), true);
-    
+    //WebServer.send ( 302, "text/plain", "");
   });
   WebServer.begin();
 }
 
 String obtenerTipo(String filename) {
-  if (filename.endsWith(".htm")) return "text/html";
-  else if (filename.endsWith(".html")) return "text/html";
+  if (filename.endsWith(".html")||filename.endsWith(".htm")) return "text/html";
+  else if (filename.endsWith("cache")||filename.endsWith(".manifest")) return "text/cache-manifest";
   else if (filename.endsWith(".css")) return "text/css";
   else if (filename.endsWith(".js")) return "application/javascript";
   else if (filename.endsWith(".bin")) return "application/octet-stream";
   else if (filename.endsWith(".png")) return "image/png";
-  else if (filename.endsWith(".gif")) return "image/gif";
   else if (filename.endsWith(".jpg")) return "image/jpeg";
+  else if (filename.endsWith(".gz")) return "application/x-gzip";
+  else if (filename.endsWith(".svg")) return "image/svg+xml"; 
+  else if (filename.endsWith(".ttf")) return "application/x-font-ttf";
   else if (filename.endsWith(".ico")) return "image/x-icon";
   else if (filename.endsWith(".xml")) return "text/xml";
   else if (filename.endsWith(".pdf")) return "application/x-pdf";
+  else if (filename.endsWith(".gif")) return "image/gif";
   else if (filename.endsWith(".zip")) return "application/x-zip";
-  else if (filename.endsWith(".gz")) return "application/x-gzip";
-  else if (filename.endsWith(".manifest")) return "text/cache-manifest";
   return "text/plain";
 }
 
+
 bool ManejarArchivo(String path) {
- 
-  if (path.endsWith("/") ) path += "index.html";
   if (path.substring(0,10)=="/document/"){
-     path = path.substring(16,-1);}
-  
+     path = path.substring(16,-1);
+  }
+  if (path.endsWith("/") ) path += "index.html";
   String mimeType = obtenerTipo(path);
   String pathComprimido = path + ".gz";
-  if (SPIFFS.exists(pathComprimido) || SPIFFS.exists(path)) {
-    if (SPIFFS.exists(pathComprimido)) path += ".gz";
-    File file = SPIFFS.open(path, "r");
-    size_t sent = WebServer.streamFile(file, mimeType);
+
+  if(hasSD){
+  //Serial.println(path+ "  sd ");
+
+    if (SD.exists(pathComprimido) || SD.exists(path)) {
+    if (SD.exists(pathComprimido)) path += ".gz";
+    File32 rdfile = SD.open(path, O_RDONLY);
+    if(rdfile.isOpen())
+    {
+      WebServer.streamFile(rdfile, mimeType);
+      rdfile.close();
+      return true;
+    }
+    }else return false;
+  }else{
+  //Serial.println(path + "   littlefs ");
+
+    if (LittleFS.exists(pathComprimido) || LittleFS.exists(path)) {
+    if (LittleFS.exists(pathComprimido)) path += ".gz";
+    fs::File file = LittleFS.open(path, "r");
+    WebServer.streamFile(file, mimeType);
     file.close();
     return true;
+    }else return false;
   }
   return false;
 }

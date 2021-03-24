@@ -43,6 +43,7 @@ echo ${WIFISSID};
 echo ${WIFIPass};
 echo ${IP};
 cd /mk8266;
+ls /mk8266;
 rm .git .github -rf;
 #echo "CACHE MANIFEST" > ${cacheF};
 files=(`find ./ -mindepth 1 -type f |grep -v README.md|grep -v github|grep -v cache.manifest`)

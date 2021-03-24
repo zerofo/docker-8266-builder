@@ -9,7 +9,6 @@ const byte PuertoHTTP = 80;
 bool hasSD=0;
 #define SD_CS_PIN D8
 //const int CS = D8; //SD Pinout:  D5 = CLK , D6 = MISO , D7 = MOSI , D8 = CS
-SdFat  SD;
 struct ArchivoConfiguracion {
   char* WIFISSID = "demo";
   char* WIFIPass = "";

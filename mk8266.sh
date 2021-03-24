@@ -22,7 +22,8 @@ if [[ -z $cacheF ]]; then
     echo "";
     echo " 修改后从试";
     echo "";
-    if read -t 5 -p "强制忽略 请输入（Y）否则5秒后退出:" name
+    read -t 5 -p "强制忽略 请输入（Y）否则5秒后退出:" Icache
+    if [[ $Icache == "Y" || $Icache == "y" ]]
     then 
         echo "强制继续";
     else

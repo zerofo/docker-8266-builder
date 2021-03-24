@@ -1,5 +1,6 @@
-WIFISSID="-meun_by"; #wifi名称;
+WIFISSID="ps4-meun_by_zerofo"; #wifi名称;
 WIFIPass=""; #wifi密码;
 IP="9,9,9,9"; #IP地址;
 binname="ps4-zerofo"; #输出名称
 compress="n" #进行gzip 压缩
+blockList=".htm, index.html" #标记不压缩格式、文件名 以逗号区分

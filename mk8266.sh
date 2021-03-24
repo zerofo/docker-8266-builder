@@ -8,7 +8,7 @@ if [[ ! -d /mk8266 || -z `ls /mk8266` ]]; then
     echo "没有找到 需要打包的项目";
     exit;
 fi;
-for f in `ls /mk8266/*.manifest`;
+for f in `find /mk8266/ -type f -name *.manifest`;
 do
     cacheF=$f;
 done;
@@ -22,50 +22,71 @@ if [[ -z $cacheF ]]; then
     echo "";
     echo " 修改后从试";
     echo "";
-    read -t 5 -p "强制忽略 请输入（Y）否则5秒后退出:" Icache
+    echo " 该源码包  离线缓存不符合， 请选择，否则5秒后退出：";
+    echo "";
+    echo "强制自动替换(可能无法使用,适合使用cache/appcache格式缓存的离线包) 请输入(I)"
+    echo "";
+    echo "强制忽略(可能无法使用,适合默认没有离线缓存，不检测离线缓存的离线包) 请输入(Y)"
+    read -t 5 Icache
+    echo "";
     if [[ $Icache == "Y" || $Icache == "y" ]]
     then 
         echo "强制继续";
+    elif [[ $Icache == "i" || $Icache == "I" ]]; then
+        for f in `find /mk8266/ -type f -name *cache`;
+        do
+            echo "强制自动替换";
+            ext=${f##*.};
+            cacheName=${f##*/};
+            echo $cacheName;
+            echo "";
+            mv $f ${f%.*}.manifest;
+            for fh in `find /mk8266/ -type f -name *.html`;
+            do
+                sed -i "s/${cacheName}/${cacheName%.*}\.manifest/g" $fh;
+            done;
+        done;
     else
-        echo "超时退出"
+        echo "退出";
         exit;
     fi;
 fi
 
-
+blockList="";
 WIFISSID="PS4-672_zerofo";
 WIFIPass="";
 IP="9,9,9,9";
 source /config.txt;
 echo "config:"
 cat /config.txt;
-echo ${WIFISSID};
-echo ${WIFIPass};
-echo ${IP};
-cd /mk8266;
 ls /mk8266;
+cd /mk8266;
 rm .git .github -rf;
-#echo "CACHE MANIFEST" > ${cacheF};
 files=(`find ./ -mindepth 1 -type f |grep -v README.md|grep -v github|grep -v cache.manifest`)
 for f in ${files[@]};
 do
-    #echo $f >> ${cacheF};
-    #if [ ${#f} -gt 30 ]; then
-    #    echo "$f 目录加文件名超过了30。需要手动修改文件名和index.html 对应位置，否则无法正常生成bin";
-    #    exit;
-    #fi;
-    if [[ ! $f =~ ".css" || ! $f =~ ".gz" ]];then
-        if [[ $f =~ "index" ]];then 
-            echo "packing";
-        #else
-        fi;
+    if [[ ! $f =~ ".css" || ! $f =~ ".gz" || ! $f =~ ".manifest" ]];then
         if [[ $compress == "y" ]];then
-        gzip $f -f;
+            if [[ $blockList != "" ]];then
+
+                blockArray=(${blockList//,/ });
+                comp=1;
+                for var in ${blockArray[@]}
+                do
+                   if [[ ${f##*/} == $var || ${f##*.} == "\.${var}" ]]; then
+                      comp=0;
+                      break;
+                   fi;
+                done;
+                if [[ $comp -eq 1 ]]; then
+                   gzip $f -f;
+                fi;
+            else   
+                gzip $f -f;
+            fi;
         fi;
     fi;
 done;
-#echo "FALLBACK:" >> ${cacheF};
-#echo ". index.html" >> ${cacheF};
 cd /Ps4-wifi-http;
 sed -i "s/.*char\*\ WIFISSID.*/\ \ \ \ \ char\*\ WIFISSID\ =\ \"${WIFISSID}\"\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
 sed -i "s/.*char\*\ WIFIPass.*/\ \ \ \ \ char\*\ WIFIPass\ =\ \"${WIFIPass}\"\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;

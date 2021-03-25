@@ -22,12 +22,12 @@ if [[ -z $cacheF ]]; then
     echo "";
     echo " 修改后从试";
     echo "";
-    echo " 该源码包  离线缓存不符合， 请选择，否则5秒后退出：";
+    echo " 该源码包  离线缓存不符合， 请选择，否则10秒后退出：";
     echo "";
     echo "强制自动替换(可能无法使用,适合使用cache/appcache格式缓存的离线包) 请输入(I)"
     echo "";
     echo "强制忽略(可能无法使用,适合默认没有离线缓存，不检测离线缓存的离线包) 请输入(Y)"
-    read -t 5 Icache
+    read -t 10 -n 1 Icache
     echo "";
     if [[ $Icache == "Y" || $Icache == "y" ]]
     then 

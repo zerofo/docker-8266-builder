@@ -37,10 +37,9 @@ void ConfigurarWIFIy() {
   WiFi.softAP(Configuracion.WIFISSID);
 }
 void setup() {
-  if (SD.begin(SD_CS_PIN))
+  if (SD.begin(SD_CS_PIN,SPI_FULL_SPEED))
   {hasSD = true;
   }else{
-   Serial.println(" not  sd ");
     hasSD = false;
     LittleFS.begin();
   }
@@ -56,8 +55,7 @@ void setup() {
   DNS.start(PuertoDNS, "*", Configuracion.IP);
   WebServer.onNotFound([]() {
     if (!ManejarArchivo(WebServer.uri()))
-      WebServer.sendHeader("Location", String("/"), true);
-    //WebServer.send ( 302, "text/plain", "");
+    WebServer.sendHeader("Location", String("/"), true);
   });
   WebServer.begin();
 }
@@ -99,6 +97,7 @@ bool ManejarArchivo(String path) {
     if(rdfile.isOpen())
     {
       WebServer.streamFile(rdfile, mimeType);
+    
       rdfile.close();
       return true;
     }

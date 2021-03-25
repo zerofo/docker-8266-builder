@@ -41,7 +41,6 @@ void setup() {
   WebServer.onNotFound([]() {
     if (!ManejarArchivo(WebServer.uri()))
       WebServer.sendHeader("Location", String("/"), true);
-    //WebServer.send ( 302, "text/plain", "");
   });
   WebServer.begin();
 }

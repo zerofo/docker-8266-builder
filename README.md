@@ -4,11 +4,12 @@
 
 ## 修改config.txt 修改对应参数
 ```
-WIFISSID="PS4-672_zerofo"; #wifi名称;
+WIFISSID="ps4-meun_by_zerofo"; #wifi名称;
 WIFIPass=""; #wifi密码;
 IP="9,9,9,9"; #IP地址;
-binname="ps4672-zerofo"; #输出名称
-UserOffline="ok" #用户指南支持离线缓存 并断网
+binname="ps4-zerofo"; #输出名称
+compress="n" #进行gzip 压缩 y压缩，输入其他则不压缩
+blockList=".htm, index.html" #标记不压缩格式、文件名 以逗号区分
 ```
 
 # win10 执行 (需要安装  docker)

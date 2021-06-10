@@ -1,12 +1,4 @@
-#include <BufferedPrint.h>
-#include <FreeStack.h>
-#include <MinimumSerial.h>
-#include <RingBuf.h>
 #include <SdFat.h>
-#include <SdFatConfig.h>
-#include <sdios.h>
-
-
 
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
@@ -81,7 +73,7 @@ String obtenerTipo(String filename) {
 
 
 bool ManejarArchivo(String path) {
-  if (path.substring(0,10)=="/document/"){
+  if (path.length() > 16&&path.substring(0,10)=="/document/"){
      path = path.substring(16,-1);
   }
   if (path.endsWith("/") ) path += "index.html";

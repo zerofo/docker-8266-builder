@@ -11,7 +11,7 @@ const byte PuertoHTTP = 80;
 bool hasSD=0;
 #define SD_CS_PIN D8
 //const int CS = D8; //SD Pinout:  D5 = CLK , D6 = MISO , D7 = MOSI , D8 = CS
-SdFat  SD;
+SdExFat  SD;
 struct ArchivoConfiguracion {
   char* WIFISSID = "demo";
   char* WIFIPass = "";
@@ -73,9 +73,10 @@ String obtenerTipo(String filename) {
 
 
 bool ManejarArchivo(String path) {
-  if (path.length() > 16&&path.substring(0,10)=="/document/"){
-     path = path.substring(16,-1);
-  }
+  if (path.length() > 16)
+    if(path.substring(0,10)=="/document/")
+      path = path.substring(16,-1);
+  
   if (path.endsWith("/") ) path += "index.html";
   String mimeType = obtenerTipo(path);
   String pathComprimido = path + ".gz";
@@ -85,7 +86,7 @@ bool ManejarArchivo(String path) {
 
     if (SD.exists(pathComprimido) || SD.exists(path)) {
     if (SD.exists(pathComprimido)) path += ".gz";
-    File32 rdfile = SD.open(path, O_RDONLY);
+    ExFile rdfile = SD.open(path, O_RDONLY);
     if(rdfile.isOpen())
     {
       WebServer.streamFile(rdfile, mimeType);

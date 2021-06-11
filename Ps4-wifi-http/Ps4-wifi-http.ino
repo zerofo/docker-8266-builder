@@ -73,8 +73,7 @@ String obtenerTipo(String filename) {
 
 
 bool ManejarArchivo(String path) {
-  if (path.length() > 16)
-    if(path.substring(0,10)=="/document/")
+  if ((path.length() == 27) && (path.substring(0,10)=="/document/"))
       path = path.substring(16,-1);
   
   if (path.endsWith("/") ) path += "index.html";

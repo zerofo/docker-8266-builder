@@ -91,8 +91,7 @@ bool ManejarArchivo(String path) {
   
     rdfile.close();
     return true;
-}
-    }else return false;
+} else return false;
   }else{
 
     if (LittleFS.exists(pathComprimido) || LittleFS.exists(path)) {

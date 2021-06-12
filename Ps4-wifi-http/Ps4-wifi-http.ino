@@ -5,7 +5,6 @@
 #include <DNSServer.h>
 #include <LittleFS.h>
 #define LED_BUILTIN 2
-#define SDFAT_FILE_TYPE 1
 const byte PuertoDNS = 53;
 const byte PuertoHTTP = 80;
 bool hasSD=0;
@@ -16,7 +15,7 @@ struct ArchivoConfiguracion {
   char* WIFISSID = "demo";
   char* WIFIPass = "";
   IPAddress IP = IPAddress(9, 9, 9, 9);
-  IPAddress Subnet = IPAddress(255, 255, 255, 0);
+  IPAddress Subnet = IPAddress(255, 255, 0, 0);
 };
 
 ArchivoConfiguracion Configuracion;
@@ -29,7 +28,8 @@ void ConfigurarWIFIy() {
   WiFi.softAP(Configuracion.WIFISSID);
 }
 void setup() {
-  if (SD.begin(SD_CS_PIN,SPI_FULL_SPEED))
+  ConfigurarWIFIy();
+  if (SD.begin(SD_CS_PIN))
   {hasSD = true;
   }else{
     hasSD = false;
@@ -41,7 +41,6 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, 0);
 
-  ConfigurarWIFIy();
   DNS.setTTL(300);
   DNS.setErrorReplyCode(DNSReplyCode::ServerFailure);
   DNS.start(PuertoDNS, "*", Configuracion.IP);
@@ -65,7 +64,6 @@ String obtenerTipo(String filename) {
   else if (filename.endsWith(".ttf")) return "application/x-font-ttf";
   else if (filename.endsWith(".ico")) return "image/x-icon";
   else if (filename.endsWith(".xml")) return "text/xml";
-  else if (filename.endsWith(".pdf")) return "application/x-pdf";
   else if (filename.endsWith(".gif")) return "image/gif";
   else if (filename.endsWith(".zip")) return "application/x-zip";
   return "text/plain";
@@ -81,8 +79,6 @@ bool ManejarArchivo(String path) {
   String pathComprimido = path + ".gz";
 
   if(hasSD){
-  //Serial.println(path+ "  sd ");
-
     if (SD.exists(pathComprimido) || SD.exists(path)) {
     if (SD.exists(pathComprimido)) path += ".gz";
     ExFile rdfile = SD.open(path, O_RDONLY);
@@ -95,7 +91,6 @@ bool ManejarArchivo(String path) {
     }
     }else return false;
   }else{
-  //Serial.println(path + "   littlefs ");
 
     if (LittleFS.exists(pathComprimido) || LittleFS.exists(path)) {
     if (LittleFS.exists(pathComprimido)) path += ".gz";

@@ -86,7 +86,7 @@ bool ManejarArchivo(String path) {
     Serial.println(path+ "  sd ");
     if (SD_tf.exists(pathComprimido) || SD_tf.exists(path)) {
     if (SD_tf.exists(pathComprimido)) path += ".gz";
-    File rdfile = SD_tf.open(path,O_RDONLY);
+    ExFile rdfile = SD_tf.open(path,O_RDONLY);
     if(SD_tf.isOpen()){
     WebServer.streamFile(rdfile, mimeType);
   

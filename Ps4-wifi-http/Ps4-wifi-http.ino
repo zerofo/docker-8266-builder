@@ -86,13 +86,12 @@ bool ManejarArchivo(String path) {
     if (SD.exists(pathComprimido) || SD.exists(path)) {
     if (SD.exists(pathComprimido)) path += ".gz";
     File rdfile = SD.open(path,"r");
-    if(rdfile.isOpen())
-    {
-      WebServer.streamFile(rdfile, mimeType);
-    
-      rdfile.close();
-      return true;
-    }
+
+    WebServer.streamFile(rdfile, mimeType);
+  
+    rdfile.close();
+    return true;
+}
     }else return false;
   }else{
 

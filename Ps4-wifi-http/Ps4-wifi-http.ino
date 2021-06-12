@@ -1,5 +1,10 @@
+#include <BufferedPrint.h>
+#include <FreeStack.h>
+#include <MinimumSerial.h>
+#include <RingBuf.h>
 #include <SdFat.h>
-
+#include <SdFatConfig.h>
+#include <sdios.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <DNSServer.h>
@@ -81,7 +86,7 @@ bool ManejarArchivo(String path) {
   if(hasSD){
     if (SD.exists(pathComprimido) || SD.exists(path)) {
     if (SD.exists(pathComprimido)) path += ".gz";
-    ExFile rdfile = SD.open(path, O_RDONLY);
+    ExFile rdfile = SD.open(path);
     if(rdfile.isOpen())
     {
       WebServer.streamFile(rdfile, mimeType);

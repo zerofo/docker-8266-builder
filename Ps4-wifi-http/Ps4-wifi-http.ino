@@ -87,7 +87,7 @@ bool ManejarArchivo(String path) {
     if (SD_tf.exists(pathComprimido) || SD_tf.exists(path)) {
     if (SD_tf.exists(pathComprimido)) path += ".gz";
     ExFile rdfile = SD_tf.open(path,O_RDONLY);
-    if(SD_tf.isOpen()){
+    if(rdfile.isOpen()){
     WebServer.streamFile(rdfile, mimeType);
   
     rdfile.close();

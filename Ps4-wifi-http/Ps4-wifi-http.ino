@@ -1,4 +1,5 @@
-#include <SD.h>
+#include <SdFat.h>
+#include "SdFat.h"
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <DNSServer.h>
@@ -11,7 +12,7 @@ bool hasSD=0;
 
 #define SD_CS_PIN D8
 //const int CS = D8; //SD Pinout:  D5 = CLK , D6 = MISO , D7 = MOSI , D8 = CS
-
+SdExFat SD_tf;
 struct ArchivoConfiguracion {
   char* WIFISSID = "demo";
   char* WIFIPass = "";
@@ -30,7 +31,7 @@ void ConfigurarWIFIy() {
 }
 void setup() {
   ConfigurarWIFIy();
-  if (SD.begin(SD_CS_PIN))
+  if (SD_tf.begin(SD_CS_PIN))
   {hasSD = true;
   }else{
     hasSD = false;
@@ -83,14 +84,14 @@ bool ManejarArchivo(String path) {
 
   if(hasSD){
     Serial.println(path+ "  sd ");
-    if (SD.exists(pathComprimido) || SD.exists(path)) {
-    if (SD.exists(pathComprimido)) path += ".gz";
-    File rdfile = SD.open(path,"r");
-
+    if (SD_tf.exists(pathComprimido) || SD_tf.exists(path)) {
+    if (SD_tf.exists(pathComprimido)) path += ".gz";
+    File rdfile = SD_tf.open(path,O_RDONLY);
+    if(SD_tf.isOpen()){
     WebServer.streamFile(rdfile, mimeType);
   
     rdfile.close();
-    return true;
+    return true;}else return false;
 } else return false;
   }else{
 

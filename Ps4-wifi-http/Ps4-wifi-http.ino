@@ -1,10 +1,4 @@
-#include <BufferedPrint.h>
-#include <FreeStack.h>
-#include <MinimumSerial.h>
-#include <RingBuf.h>
-#include <SdFat.h>
-#include <SdFatConfig.h>
-#include <sdios.h>
+#include <SD.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <DNSServer.h>
@@ -13,9 +7,11 @@
 const byte PuertoDNS = 53;
 const byte PuertoHTTP = 80;
 bool hasSD=0;
+
+
 #define SD_CS_PIN D8
 //const int CS = D8; //SD Pinout:  D5 = CLK , D6 = MISO , D7 = MOSI , D8 = CS
-SdExFat  SD;
+
 struct ArchivoConfiguracion {
   char* WIFISSID = "demo";
   char* WIFIPass = "";
@@ -41,8 +37,8 @@ void setup() {
     LittleFS.begin();
   }
 
-  //Serial.begin(115200);
-  //Serial.setDebugOutput(true);
+  Serial.begin(115200);
+  Serial.setDebugOutput(true);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, 0);
 
@@ -54,6 +50,7 @@ void setup() {
     WebServer.sendHeader("Location", String("/"), true);
   });
   WebServer.begin();
+  
 }
 
 String obtenerTipo(String filename) {
@@ -76,7 +73,8 @@ String obtenerTipo(String filename) {
 
 
 bool ManejarArchivo(String path) {
-  if ((path.substring(12,16)=="/ps4") && (path.substring(0,10)=="/document/"))
+  
+  if ((path.length()>16) && (path.substring(0,10)=="/document/"))
       path = path.substring(16,-1);
   
   if (path.endsWith("/") ) path += "index.html";
@@ -84,9 +82,10 @@ bool ManejarArchivo(String path) {
   String pathComprimido = path + ".gz";
 
   if(hasSD){
+    Serial.println(path+ "  sd ");
     if (SD.exists(pathComprimido) || SD.exists(path)) {
     if (SD.exists(pathComprimido)) path += ".gz";
-    ExFile rdfile = SD.open(path);
+    File rdfile = SD.open(path,"r");
     if(rdfile.isOpen())
     {
       WebServer.streamFile(rdfile, mimeType);

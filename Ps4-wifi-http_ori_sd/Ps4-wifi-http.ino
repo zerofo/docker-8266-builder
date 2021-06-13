@@ -1,3 +1,5 @@
+#include <FS.h>
+#include <SPI.h>
 #include <SD.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
@@ -83,7 +85,7 @@ bool ManejarArchivo(String path) {
   if(hasSD){
     if (SD.exists(pathComprimido) || SD.exists(path)) {
     if (SD.exists(pathComprimido)) path += ".gz";
-    File rdfile = SD.open(path,O_RDONLY);
+    fsFile rdfile = SD.open(path,"r");
     WebServer.streamFile(rdfile, mimeType);
   
     rdfile.close();

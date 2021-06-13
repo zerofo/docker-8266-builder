@@ -85,7 +85,7 @@ bool ManejarArchivo(String path) {
   if(hasSD){
     if (SD.exists(pathComprimido) || SD.exists(path)) {
     if (SD.exists(pathComprimido)) path += ".gz";
-    fsFile rdfile = SD.open(path,"r");
+    fs::File32 rdfile = SD.open(path,"r");
     WebServer.streamFile(rdfile, mimeType);
   
     rdfile.close();

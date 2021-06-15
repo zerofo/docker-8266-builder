@@ -1,5 +1,4 @@
-#include <SdFat.h>
-#include "SdFat.h"
+#include <SD.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <DNSServer.h>
@@ -10,9 +9,9 @@ const byte PuertoHTTP = 80;
 bool hasSD=0;
 
 
-#define SD_CS_PIN D8
-//const int CS = D8; //SD Pinout:  D5 = CLK , D6 = MISO , D7 = MOSI , D8 = CS
-SdExFat SD_tf;
+//#define SD_CS_PIN D8
+const int CS = D8; //SD Pinout:  D5 = CLK , D6 = MISO , D7 = MOSI , D8 = CS
+//sdfat::SdExFat SD_tf;
 struct ArchivoConfiguracion {
   char* WIFISSID = "demo";
   char* WIFIPass = "";
@@ -31,7 +30,8 @@ void ConfigurarWIFIy() {
 }
 void setup() {
   ConfigurarWIFIy();
-  if (SD_tf.begin(SD_CS_PIN))
+  ///if (SD_tf.begin(SD_CS_PIN))
+  if (SD.begin(CS))
   {hasSD = true;
   }else{
     hasSD = false;
@@ -44,14 +44,13 @@ void setup() {
   digitalWrite(LED_BUILTIN, 0);
 
   DNS.setTTL(300);
-  DNS.setErrorReplyCode(DNSReplyCode::ServerFailure);
+  //DNS.setErrorReplyCode(DNSReplyCode::ServerFailure);
   DNS.start(PuertoDNS, "*", Configuracion.IP);
+  WebServer.begin();
   WebServer.onNotFound([]() {
     if (!ManejarArchivo(WebServer.uri()))
     WebServer.sendHeader("Location", String("/"), true);
   });
-  WebServer.begin();
-  
 }
 
 String obtenerTipo(String filename) {
@@ -84,15 +83,13 @@ bool ManejarArchivo(String path) {
 
   if(hasSD){
     Serial.println(path+ "  sd ");
-    if (SD_tf.exists(pathComprimido) || SD_tf.exists(path)) {
-    if (SD_tf.exists(pathComprimido)) path += ".gz";
-    ExFile rdfile = SD_tf.open(path,O_RDONLY);
-    if(rdfile.isOpen()){
+    if (SD.exists(pathComprimido) || SD.exists(path)) {
+    if (SD.exists(pathComprimido)) path += ".gz";
+    fs::File rdfile = SD.open(path,"r");
     WebServer.streamFile(rdfile, mimeType);
   
     rdfile.close();
     return true;}else return false;
-} else return false;
   }else{
 
     if (LittleFS.exists(pathComprimido) || LittleFS.exists(path)) {
@@ -108,9 +105,10 @@ bool ManejarArchivo(String path) {
 int led=0;
 int detect;
 void loop() {
+  DNS.processNextRequest();
   detect = WebServer.client();
+
   if (detect!=led){digitalWrite(LED_BUILTIN, led);led = detect;}
   
   WebServer.handleClient();
-  DNS.processNextRequest();
 }

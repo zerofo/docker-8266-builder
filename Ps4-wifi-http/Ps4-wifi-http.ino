@@ -51,6 +51,7 @@ void setup() {
     if (!ManejarArchivo(WebServer.uri()))
     WebServer.sendHeader("Location", String("/"), true);
   });
+  WebServer.send(200, "text/plain","");   
 }
 
 String obtenerTipo(String filename) {

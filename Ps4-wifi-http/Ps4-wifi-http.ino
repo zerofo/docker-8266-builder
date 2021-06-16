@@ -75,7 +75,8 @@ String obtenerTipo(String filename) {
 
 bool ManejarArchivo(String path) {
   if (path=="/generate_204")
-      WebServer.send(204, "text/plain","");   
+      WebServer.send(302, "text/plain","");   
+      WebServer.sendHeader("Location", String("/"), true);
       return true;
   if ((path.length()>16) && (path.substring(0,10)=="/document/"))
       path = path.substring(16,-1);

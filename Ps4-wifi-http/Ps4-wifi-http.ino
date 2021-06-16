@@ -50,8 +50,8 @@ void setup() {
   WebServer.onNotFound([]() {
     if (!ManejarArchivo(WebServer.uri()))
     WebServer.sendHeader("Location", String("/"), true);
+    WebServer.send(200, "text/plain","");   
   });
-  WebServer.send(200, "text/plain","");   
 }
 
 String obtenerTipo(String filename) {

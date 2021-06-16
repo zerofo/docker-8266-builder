@@ -3,12 +3,8 @@
 #include <DNSServer.h>
 #include <LittleFS.h>
 #define LED_BUILTIN 2
-#define SDFAT_FILE_TYPE 1
 const byte PuertoDNS = 53;
 const byte PuertoHTTP = 80;
-bool hasSD=0;
-#define SD_CS_PIN D8
-//const int CS = D8; //SD Pinout:  D5 = CLK , D6 = MISO , D7 = MOSI , D8 = CS
 struct ArchivoConfiguracion {
   char* WIFISSID = "demo";
   char* WIFIPass = "";
@@ -29,8 +25,6 @@ void setup() {
   LittleFS.begin();
 
 
-  //Serial.begin(115200);
-  //Serial.setDebugOutput(true);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, 0);
 
@@ -66,7 +60,10 @@ String obtenerTipo(String filename) {
 
 
 bool ManejarArchivo(String path) {
-  if (path.substring(0,10)=="/document/"){
+  if (path=="/generate_204")
+      WebServer.send(204, "text/plain","");   
+      return true;
+  if ((path.length()>16) && (path.substring(0,10)=="/document/"))
      path = path.substring(16,-1);
   }
   if (path.endsWith("/") ) path += "index.html";

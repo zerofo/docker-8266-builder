@@ -122,6 +122,17 @@ do
             else   
                 gzip $f -f;
             fi;
+        else
+            if [[ $compress_List != "" ]];then 
+               compArray=(${compress_List//,/ });
+               for var in ${compArray[@]}
+               do
+                   if [[ ${f##*/} == $var || ${f##*.} == "\.${var}" ]]; then
+                       echo $var;
+                       gzip $f -f;
+                   fi;
+               done;
+            fi;
         fi;
     fi;
 done;

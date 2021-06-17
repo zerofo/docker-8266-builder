@@ -48,10 +48,8 @@ void setup() {
   DNS.start(PuertoDNS, "*", Configuracion.IP);
   WebServer.begin();
   WebServer.onNotFound([]() {
-    if (!ManejarArchivo(WebServer.uri()))
-    WebServer.sendHeader("Location", String("/"), true);
-    WebServer.send(302, "text/plain","");   
-    
+    if (!ManejarArchivo(WebServer.uri())){WebServer.sendHeader("Location", String("/"), true);
+    WebServer.send(302, "text/plain","");}
   });
 }
 
@@ -72,7 +70,6 @@ String obtenerTipo(String filename) {
   else if (filename.endsWith(".zip")) return "application/x-zip";
   return "text/plain";
 }
-
 
 bool ManejarArchivo(String path) {
   if ((path.length()>16) && (path.substring(0,10)=="/document/"))

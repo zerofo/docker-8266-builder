@@ -8,6 +8,6 @@ RUN arduino-cli config set library.enable_unsafe_install true
 RUN arduino-cli core install esp8266:esp8266 
 RUN arduino-cli core upgrade 
 RUN arduino-cli lib upgrade 
-COPY Ps4-wifi-http_nosd /Ps4-wifi-http
+COPY Ps4-wifi-http /Ps4-wifi-http
 COPY mk8266.sh /
 ENTRYPOINT ["/bin/bash","mk8266.sh"]

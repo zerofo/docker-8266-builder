@@ -33,8 +33,8 @@ void setup() {
   DNS.setErrorReplyCode(DNSReplyCode::ServerFailure);
   DNS.start(PuertoDNS, "*", Configuracion.IP);
   WebServer.onNotFound([]() {
-    if (!ManejarArchivo(WebServer.uri()))
-      WebServer.sendHeader("Location", String("/"), true);
+    if (!ManejarArchivo(WebServer.uri())){WebServer.sendHeader("Location", String("/"), true);
+    WebServer.send(302, "text/plain","");}
   });
   WebServer.begin();
 }
@@ -60,12 +60,10 @@ String obtenerTipo(String filename) {
 
 
 bool ManejarArchivo(String path) {
-  if (path=="/generate_204")
-      WebServer.send(204, "text/plain","");   
-      return true;
+
   if ((path.length()>16) && (path.substring(0,10)=="/document/"))
      path = path.substring(16,-1);
-  }
+  
   if (path.endsWith("/") ) path += "index.html";
   String mimeType = obtenerTipo(path);
   String pathComprimido = path + ".gz";

@@ -109,6 +109,7 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
     if (SD.exists(pathComprimido)) 
      response->addHeader("Content-Encoding", "gzip"); // --> uncomment if your file is GZIPPED 
     request->send(response);
+    rdfile.close();
     return true;
     }
   }

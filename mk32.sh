@@ -8,7 +8,7 @@ if [[ ! -f /config.txt ]]; then
     echo "";
     exit;
 fi;
-if [[ ! -d /mk8266 || -z `ls /mk8266` ]]; then
+if [[ ! -d /mk32 || -z `ls /mk32` ]]; then
     echo "";
     echo -e "\033[43;31m ############################# \033[0m";
     echo -e "\033[43;31m #  没有找到 需要打包的项目  # \033[0m";
@@ -16,7 +16,7 @@ if [[ ! -d /mk8266 || -z `ls /mk8266` ]]; then
     echo "";
     exit;
 fi;
-for f in `find /mk8266/ -type f -name *.manifest`;
+for f in `find /mk32/ -type f -name *.manifest`;
 do
     cacheF=$f;
 done;
@@ -52,7 +52,7 @@ if [[ -z $cacheF ]]; then
         echo -e "\033[43;31m ########################################## \033[0m";
         echo "";
     elif [[ $Icache == "i" || $Icache == "I" ]]; then
-        for f in `find /mk8266/ -type f -name *cache`;
+        for f in `find /mk32/ -type f -name *cache`;
         do
             echo "";
             echo -e "\033[43;31m ########################################## \033[0m";
@@ -64,7 +64,7 @@ if [[ -z $cacheF ]]; then
             echo $cacheName;
             echo "";
             mv $f ${f%.*}.manifest;
-            for fh in `find /mk8266/ -type f -name *.html`;
+            for fh in `find /mk32/ -type f -name *.html`;
             do
                 sed -i "s/${cacheName}/${cacheName%.*}\.manifest/g" $fh;
             done;
@@ -94,11 +94,11 @@ cat /config.txt;
 echo "";
 echo -e "\033[43;31m ####     请核对离线包内容是否正确    ##### \033[0m";
 echo "";
-ls /mk8266;
+ls /mk32;
 echo "";
 echo -e "\033[43;31m ########################################## \033[0m";
 echo "";
-cd /mk8266;
+cd /mk32;
 rm .git .github -rf;
 files=(`find ./ -mindepth 1 -type f |grep -v README.md|grep -v github|grep -v cache.manifest`)
 for f in ${files[@]};
@@ -140,8 +140,8 @@ cd /Ps4-wifi-http;
 sed -i "s/.*char\*\ WIFISSID.*/\ \ \ \ \ char\*\ WIFISSID\ =\ \"${WIFISSID}\"\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
 sed -i "s/.*char\*\ WIFIPass.*/\ \ \ \ \ char\*\ WIFIPass\ =\ \"${WIFIPass}\"\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
 sed -i "s/.*IPAddress\ IP\ =\ IPAddress.*/\ \ \ \ IPAddress\ IP\ =\ IPAddress(${IP})\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
-arduino-cli compile --fqbn esp8266:esp8266:nodemcuv2:xtal=160,baud=115200,eesz=4M3M,ip=hb2f Ps4-wifi-http --output-dir=./firmware 
-mklittlefs -c /mk8266 -p 256 -b 8192 -s 0x2FA000 ./firmware/data.bin
+arduino-cli compile --fqbn esp32:esp32:esp32:CPUFreq=240 Ps4-wifi-http --output-dir=./firmware 
+mklittlefs -c /mk32 -p 256 -b 8192 -s 0x2FA000 ./firmware/data.bin
 if [ $? -ne 0 ]; then
     echo "";
     echo -e "\033[43;31m ########################################## \033[0m";
@@ -160,7 +160,8 @@ if [ $? -ne 0 ]; then
     echo "";
     exit;
 fi;
-srec_cat -output /output/${binname}_${packuptime}.bin -binary ./firmware/Ps4-wifi-http.ino.bin -binary  -fill 0xFF 0x0 0x00100000 ./firmware/data.bin -binary -offset 0x00100000;
+#srec_cat -output /output/${binname}_${packuptime}.bin -binary  bootloader_qio_80m.bin -binary -offset 0x1000 -fill 0xff 0x0000 0x8000 Ps4-wifi-http.ino.partitions.bin -binary -offset 0x8000 -fill 0xff 0x8000 0x10000 ./firmware/Ps4-wifi-http.ino.bin -binary -offset 0x10000 0x11000 data.bin -binary -offset 0x10000 -fill 0xff 0x3F0000 ;
+srec_cat -output /output/${binname}_${packuptime}.bin -binary  /esp32_base/bootloader_qio_80m.bin -binary -offset 0x1000 -fill 0xff 0x0000 0x8000 /esp32_base/partition.bin -binary -offset 0x8000 -fill 0xff 0x8000 0x10000 ./firmware/Ps4-wifi-http.ino.bin -binary -offset 0x10000 -fill 0xff 0x10000 0x100000 ./firmware/data.bin -binary -offset 0x100000
 if [[ ! -f "/output/${binname}_${packuptime}.bin" ]];then
 echo "编译出错";
 fi;
@@ -168,4 +169,4 @@ md5sum /output/${binname}_${packuptime}.bin > /output/${binname}_${packuptime}.m
 
 zip /output/${binname}_${packuptime}.zip /output/${binname}_${packuptime}.bin /output/${binname}_${packuptime}.md5;
 rm /output/${binname}_${packuptime}.bin /output/${binname}_${packuptime}.md5;
-rm /mk8266/* -rf;
+rm /mk32/* -rf;

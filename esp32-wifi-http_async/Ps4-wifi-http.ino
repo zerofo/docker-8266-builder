@@ -1,15 +1,17 @@
 #include <SD.h>
-#include <ESP8266WiFi.h>
-#include <ESPAsyncTCP.h>
+//#include <ESP8266WiFi.h>
+#include <WiFi.h>
+
+#include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <DNSServer.h>
-#include <LittleFS.h>
+#include <LITTLEFS.h>
 #define LED_BUILTIN 2
 const byte PuertoDNS = 53;
 const byte PuertoHTTP = 80;
 
 bool hasSD=false;
-const int CS = D8; //SD Pinout:  D5 = CLK , D6 = MISO , D7 = MOSI , D8 = CS
+const int CS = 17; //SD Pinout:  D5 = CLK , D6 = MISO , D7 = MOSI , D8 = CS
 
 
 struct ArchivoConfiguracion {
@@ -39,7 +41,7 @@ void setup() {
   hasSD = true;
   else{
     hasSD = false;
-    LittleFS.begin();
+    LITTLEFS.begin();
   }
 
   delay(0);
@@ -114,12 +116,12 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
     }
   }
    else{
-    if (LittleFS.exists(pathComprimido) || LittleFS.exists(path)) {
+    if (LITTLEFS.exists(pathComprimido) || LITTLEFS.exists(path)) {
     //Serial.println(path+ " setge 2 ");
 
-    if (LittleFS.exists(pathComprimido)) path += ".gz";
-    AsyncWebServerResponse* response = request->beginResponse(LittleFS, path, mimeType);
-    if (LittleFS.exists(pathComprimido)) 
+    if (LITTLEFS.exists(pathComprimido)) path += ".gz";
+    AsyncWebServerResponse* response = request->beginResponse(LITTLEFS, path, mimeType);
+    if (LITTLEFS.exists(pathComprimido)) 
      response->addHeader("Content-Encoding", "gzip"); // --> uncomment if your file is GZIPPED 
     request->send(response);
     return true;

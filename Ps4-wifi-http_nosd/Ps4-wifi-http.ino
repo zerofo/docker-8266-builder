@@ -34,7 +34,8 @@ void setup() {
   DNS.start(PuertoDNS, "*", Configuracion.IP);
   WebServer.onNotFound([]() {
     if (!ManejarArchivo(WebServer.uri())){WebServer.sendHeader("Location", String("/"), true);
-    WebServer.send(302, "text/plain","");}
+    //WebServer.send(302, "text/plain","");
+    }
   });
   WebServer.begin();
 }
@@ -75,8 +76,7 @@ bool ManejarArchivo(String path) {
     WebServer.streamFile(file, mimeType);
     file.close();
     return true;
-    }else return false;
-  
+    }
   return false;
 }
 int led=0;

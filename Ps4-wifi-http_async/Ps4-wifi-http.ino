@@ -1,10 +1,11 @@
-#include <SD.h>
+// #include <SD.h>
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <DNSServer.h>
 #include <LittleFS.h>
 #define LED_BUILTIN 2
+#define D7pin 13
 const byte PuertoDNS = 53;
 const byte PuertoHTTP = 80;
 
@@ -22,7 +23,17 @@ struct ArchivoConfiguracion {
 ArchivoConfiguracion Configuracion;
 AsyncWebServer WebServer(PuertoHTTP);
 DNSServer DNS;
+void turnoff_usb(){
 
+  // digitalWrite(D6pin, LOW);
+  // delay(500);
+  digitalWrite(D7pin, LOW);
+}
+void turnon_usb(){
+  digitalWrite(D7pin, HIGH);
+  // delay(500);
+  // digitalWrite(D6pin, HIGH);
+}
 void ConfigurarWIFIy() {
   WiFi.mode(WIFI_AP);
   WiFi.softAPConfig(Configuracion.IP, Configuracion.IP, Configuracion.Subnet);
@@ -45,7 +56,12 @@ void setup() {
   delay(0);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, 1);
-
+  pinMode(D7pin, OUTPUT);
+  // pinMode(D6pin, OUTPUT);
+  digitalWrite(D7pin, LOW);
+  // digitalWrite(D6pin, LOW);
+  
+  // turnoff_usb();
   ConfigurarWIFIy();
   delay(0);
 
@@ -93,6 +109,17 @@ String obtenerTipo(String filename) {
 
 bool ManejarArchivo(AsyncWebServerRequest *request) {
   String path = request->url();
+  if(path.endsWith("turnoff_usb")){
+    turnoff_usb();
+    Serial.println("off");
+
+    return true;
+  }
+  if(path.endsWith("turnon_usb")){
+    Serial.println("on");
+    turnon_usb();
+    return true;
+  }
   if ((path.indexOf('/ps4/')>1) && (path.indexOf("/document/")>1))
      path = path.substring(16,-1);  
   if (path.endsWith("/") ) path += "index.html";

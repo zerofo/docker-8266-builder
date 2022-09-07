@@ -142,7 +142,7 @@ sed -i "s/.*char\*\ WIFIPass.*/\ \ \ \ \ char\*\ WIFIPass\ =\ \"${WIFIPass}\"\;/
 sed -i "s/.*IPAddress\ IP\ =\ IPAddress.*/\ \ \ \ IPAddress\ IP\ =\ IPAddress(${IP})\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
 echo "xyx===";
 arduino-cli sketch new Ps4-wifi-http
-arduino-cli compile --fqbn esp8266:esp8266:nodemcuv2,baud=115200,eesz=4M3M Ps4-wifi-http --output-dir=./firmware 
+arduino-cli compile --fqbn esp8266:esp8266:nodemcuv2:xtal=80,baud=115200,eesz=4M3M Ps4-wifi-http --output-dir=./firmware 
 echo "xyx===?";
 mklittlefs -c /mk8266 -p 256 -b 8192 -s 0x2EA000 ./firmware/data.bin
 echo "xyx===2";

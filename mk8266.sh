@@ -142,7 +142,7 @@ cd /Ps4-wifi-http;
 # sed -i "s/.*IPAddress\ IP\ =\ IPAddress.*/\ \ \ \ IPAddress\ IP\ =\ IPAddress(${IP})\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
 echo "xyx===";
 arduino-cli sketch new Ps4-wifi-http
-find . 
+rm Ps4-wifi-http.ino
 arduino-cli compile --fqbn esp8266:esp8266:nodemcuv2:xtal=80,baud=115200,eesz=4M3M Ps4-wifi-http --output-dir=./firmware 
 echo "xyx===?";
 mklittlefs -c /mk8266 -p 256 -b 8192 -s 0x2EA000 ./firmware/data.bin
@@ -166,7 +166,7 @@ if [ $? -ne 0 ]; then
     exit;
 fi;
 srec_cat -output /output/${binname}_${packuptime}.bin -binary ./firmware/Ps4-wifi-http.ino.bin -binary  -fill 0xFF 0x0 0x00100000 ./firmware/data.bin -binary -offset 0x00100000;
-# cp ./firmware/Ps4-wifi-http.ino.bin  /output/${binname}_${packuptime}.bin
+cp ./firmware/Ps4-wifi-http.ino.bin  /output/${binname}_${packuptime}.bin
 if [[ ! -f "/output/${binname}_${packuptime}.bin" ]];then
 echo "编译出错";
 fi;

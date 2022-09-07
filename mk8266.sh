@@ -144,7 +144,7 @@ echo "xyx===";
 arduino-cli sketch new Ps4-wifi-http
 arduino-cli compile --fqbn esp8266:esp8266:nodemcuv2:xtal=160,baud=115200,eesz=4M3M,ip=hb2f Ps4-wifi-http --output-dir=./firmware 
 echo "xyx===?";
-mklittlefs -c /mk8266 -p 256 -b 8192 -s 0x2FA000 ./firmware/data.bin
+mklittlefs -c /mk8266 -p 256 -b 8192 -s 0x2F0000 ./firmware/data.bin
 echo "xyx===2";
 if [ $? -ne 0 ]; then
     echo "";

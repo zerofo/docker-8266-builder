@@ -1,3 +1,4 @@
+#include <SPI.h>
 #include <SD.h>
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>

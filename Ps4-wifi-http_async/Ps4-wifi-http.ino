@@ -47,6 +47,8 @@ void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(true);
   delay(0);
+  Serial.println(" init. ");
+  
   if (SD.begin(CS))
   hasSD = true;
   else{
@@ -69,7 +71,7 @@ void setup() {
   DNS.setTTL(300);
   DNS.setErrorReplyCode(DNSReplyCode::ServerFailure);
   DNS.start(PuertoDNS, "*", Configuracion.IP);
-  //Serial.println(" init. ");
+  Serial.println(" init done. ");
   delay(0);
 
 

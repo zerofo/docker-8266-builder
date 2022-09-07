@@ -121,7 +121,7 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
     turnon_usb();
     return true;
   }
-  if ((path.indexOf('/ps4/')>1) && (path.indexOf("/document/")>1))
+  if ((path.indexOf("/ps4/")>1) && (path.indexOf("/document/")>1))
      path = path.substring(16,-1);  
   if (path.endsWith("/") ) path += "index.html";
   String mimeType = obtenerTipo(path);

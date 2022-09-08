@@ -136,17 +136,16 @@ do
         fi;
     fi;
 done;
-cd /Ps4-wifi-http;
-# sed -i "s/.*char\*\ WIFISSID.*/\ \ \ \ \ char\*\ WIFISSID\ =\ \"${WIFISSID}\"\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
-# sed -i "s/.*char\*\ WIFIPass.*/\ \ \ \ \ char\*\ WIFIPass\ =\ \"${WIFIPass}\"\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
-# sed -i "s/.*IPAddress\ IP\ =\ IPAddress.*/\ \ \ \ IPAddress\ IP\ =\ IPAddress(${IP})\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
-echo "xyx===";
-arduino-cli sketch new Ps4-wifi-http
-rm Ps4-wifi-http.ino
-arduino-cli compile --fqbn esp8266:esp8266:nodemcuv2:xtal=80,baud=115200,eesz=4M3M Ps4-wifi-http --output-dir=./firmware 
-echo "xyx===?";
+cd /;
+sed -i "s/.*char\*\ WIFISSID.*/\ \ \ \ \ char\*\ WIFISSID\ =\ \"${WIFISSID}\"\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
+sed -i "s/.*char\*\ WIFIPass.*/\ \ \ \ \ char\*\ WIFIPass\ =\ \"${WIFIPass}\"\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
+sed -i "s/.*IPAddress\ IP\ =\ IPAddress.*/\ \ \ \ IPAddress\ IP\ =\ IPAddress(${IP})\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
+
+
+arduino-cli compile --fqbn esp8266:esp8266:nodemcuv2:xtal=160,baud=115200,eesz=4M3M Ps4-wifi-http --output-dir=./firmware 
+
 mklittlefs -c /mk8266 -p 256 -b 8192 -s 0x2EA000 ./firmware/data.bin
-echo "xyx===2";
+
 if [ $? -ne 0 ]; then
     echo "";
     echo -e "\033[43;31m ########################################## \033[0m";

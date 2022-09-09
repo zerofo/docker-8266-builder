@@ -58,21 +58,30 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, 1);
   pinMode(D7pin, OUTPUT);
+  // pinMode(D6pin, OUTPUT);
   digitalWrite(D7pin, LOW);
+  // digitalWrite(D6pin, LOW);
+  
+  // turnoff_usb();
   ConfigurarWIFIy();
   delay(0);
 
   DNS.setTTL(300);
   DNS.setErrorReplyCode(DNSReplyCode::ServerFailure);
   DNS.start(PuertoDNS, "*", Configuracion.IP);
-
+  //Serial.println(" init. ");
   delay(0);
 
 
+/*  WebServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    AsyncWebServerResponse* response = request->beginResponse(LittleFS, path, mimeType);
+    request->send(response);
+    });*/
   WebServer.onNotFound([](AsyncWebServerRequest *request){
-
+    //Serial.println(" in? ");
     if (!ManejarArchivo(request)){
-
+    //Serial.println(" not ");
+      //request->
       request->redirect("/index.html");
     }
     });
@@ -103,9 +112,12 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
   String path = request->url();
   if(path.endsWith("turnoff_usb")){
     turnoff_usb();
+    Serial.println("off");
+
     return true;
   }
-  else if(path.endsWith("turnon_usb")){
+  if(path.endsWith("turnon_usb")){
+    Serial.println("on");
     turnon_usb();
     return true;
   }
@@ -115,7 +127,9 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
   String mimeType = obtenerTipo(path);
   String pathComprimido = path + ".gz";
 
+  //Serial.println(path+ " setge 1 ");
   if(hasSD){
+    //Serial.println(path+ " setge 2 ");
     if (SD.exists(pathComprimido) || SD.exists(path)) {
     if (SD.exists(pathComprimido)) path += ".gz";
     fs::File rdfile = SD.open(path,"r");
@@ -129,11 +143,13 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
   }
    else{
     if (LittleFS.exists(pathComprimido) || LittleFS.exists(path)) {
-      if (LittleFS.exists(pathComprimido)) path += ".gz";
-      AsyncWebServerResponse* response = request->beginResponse(LittleFS, path, mimeType);
-      if (LittleFS.exists(pathComprimido)) 
-        response->addHeader("Content-Encoding", "gzip"); // --> uncomment if your file is GZIPPED 
-      request->send(response);
+    //Serial.println(path+ " setge 2 ");
+
+    if (LittleFS.exists(pathComprimido)) path += ".gz";
+    AsyncWebServerResponse* response = request->beginResponse(LittleFS, path, mimeType);
+    if (LittleFS.exists(pathComprimido)) 
+     response->addHeader("Content-Encoding", "gzip"); // --> uncomment if your file is GZIPPED 
+    request->send(response);
     return true;
     }
   }

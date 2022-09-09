@@ -109,9 +109,9 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
     turnon_usb();
     return true;
   }
-  else if ((path.indexOf("/ps4/")>1) && (path.indexOf("/document/")>1))
+  if ((path.indexOf("/ps4/")>1) && (path.indexOf("/document/")>1))
      path = path.substring(16,-1);  
-  else if (path.endsWith("/") ) path += "index.html";
+  if (path.endsWith("/") ) path += "index.html";
   String mimeType = obtenerTipo(path);
   String pathComprimido = path + ".gz";
 
@@ -129,13 +129,11 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
   }
    else{
     if (LittleFS.exists(pathComprimido) || LittleFS.exists(path)) {
-
-
-    if (LittleFS.exists(pathComprimido)) path += ".gz";
-    AsyncWebServerResponse* response = request->beginResponse(LittleFS, path, mimeType);
-    if (LittleFS.exists(pathComprimido)) 
-     response->addHeader("Content-Encoding", "gzip"); // --> uncomment if your file is GZIPPED 
-    request->send(response);
+      if (LittleFS.exists(pathComprimido)) path += ".gz";
+      AsyncWebServerResponse* response = request->beginResponse(LittleFS, path, mimeType);
+      if (LittleFS.exists(pathComprimido)) 
+        response->addHeader("Content-Encoding", "gzip"); // --> uncomment if your file is GZIPPED 
+      request->send(response);
     return true;
     }
   }

@@ -10,6 +10,6 @@ RUN arduino-cli core upgrade
 RUN arduino-cli lib install --git-url https://github.com/me-no-dev/ESPAsyncTCP.git
 RUN arduino-cli lib install --git-url https://github.com/me-no-dev/ESPAsyncWebServer.git
 RUN arduino-cli lib upgrade 
-COPY Ps4-wifi-http_nosd_async /Ps4-wifi-http
+COPY Ps4-wifi-http_async /Ps4-wifi-http
 COPY mk8266.sh /
 ENTRYPOINT ["/bin/bash","mk8266.sh"]

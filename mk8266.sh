@@ -165,7 +165,6 @@ if [ $? -ne 0 ]; then
     exit;
 fi;
 srec_cat -output /output/${binname}_${packuptime}.bin -binary ./firmware/Ps4-wifi-http.ino.bin -binary  -fill 0xFF 0x0 0x00100000 ./firmware/data.bin -binary -offset 0x00100000;
-cp ./firmware/Ps4-wifi-http.ino.bin  /output/${binname}_${packuptime}.bin
 if [[ ! -f "/output/${binname}_${packuptime}.bin" ]];then
 echo "编译出错";
 fi;

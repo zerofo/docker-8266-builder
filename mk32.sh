@@ -100,48 +100,29 @@ echo -e "\033[43;31m ########################################## \033[0m";
 echo "";
 cd /mk32;
 rm .git .github -rf;
-files=(`find ./ -mindepth 1 -type f |grep -v README.md|grep -v github|grep -v cache.manifest`)
+files=(`find ./ -mindepth 1 -type f |grep -v README.md|grep -v github|grep -v cache.manifest|grep -v .img`)
 for f in ${files[@]};
 do
-    if [[ ! $f =~ ".css" || ! $f =~ ".gz" || ! $f =~ ".manifest" ]];then
+    if [[ ( ! $f =~ ".git" ) && ( ! $f =~ ".css" ) && ( ! $f =~ ".manifest" )]]; then
         if [[ $compress == "y" ]];then
-            if [[ $blockList != "" ]];then
-
-                blockArray=(${blockList//,/ });
-                comp=1;
-                for var in ${blockArray[@]}
-                do
-                   if [[ ${f##*/} == $var || ${f##*.} == "\.${var}" ]]; then
-                      comp=0;
-                      break;
-                   fi;
-                done;
-                if [[ $comp -eq 1 ]]; then
-                   gzip $f -f;
-                fi;
-            else   
-                gzip $f -f;
+            if [[ ( ! ${blockList//,/ } =~ ${f##*/} ) || ( ! ${blockList//,/ } =~ ${f##*.} ) ]];then
+            gzip -f $f;
             fi;
         else
-            if [[ $compress_List != "" ]];then 
-               compArray=(${compress_List//,/ });
-               for var in ${compArray[@]}
-               do
-                   if [[ ${f##*/} == $var || ${f##*.} == "\.${var}" ]]; then
-                       echo $var;
-                       gzip $f -f;
-                   fi;
-               done;
+            if [[ ( ${compress_List//,/ } =~ ${f##*/} ) ]];then
+            gzip -f $f;
             fi;
+
         fi;
     fi;
 done;
+
 cd /;
 sed -i "s/.*char\*\ WIFISSID.*/\ \ \ \ \ char\*\ WIFISSID\ =\ \"${WIFISSID}\"\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
 sed -i "s/.*char\*\ WIFIPass.*/\ \ \ \ \ char\*\ WIFIPass\ =\ \"${WIFIPass}\"\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
 sed -i "s/.*IPAddress\ IP\ =\ IPAddress.*/\ \ \ \ IPAddress\ IP\ =\ IPAddress(${IP})\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
-arduino-cli compile --fqbn esp32:esp32:esp32:CPUFreq=240 Ps4-wifi-http --output-dir=./firmware 
-mklittlefs -c /mk32 -p 256 -b 8192 -s 0x2FA000 ./firmware/data.bin
+arduino-cli compile --fqbn esp32:esp32:esp32s2:CPUFreq=240 Ps4-wifi-http --output-dir=./firmware 
+mklittlefs -c /mk32 -p 256 -b 4096 -s 0x2F0000 ./firmware/data.bin
 if [ $? -ne 0 ]; then
     echo "";
     echo -e "\033[43;31m ########################################## \033[0m";
@@ -161,7 +142,13 @@ if [ $? -ne 0 ]; then
     exit;
 fi;
 #srec_cat -output /output/${binname}_${packuptime}.bin -binary  bootloader_qio_80m.bin -binary -offset 0x1000 -fill 0xff 0x0000 0x8000 Ps4-wifi-http.ino.partitions.bin -binary -offset 0x8000 -fill 0xff 0x8000 0x10000 ./firmware/Ps4-wifi-http.ino.bin -binary -offset 0x10000 0x11000 data.bin -binary -offset 0x10000 -fill 0xff 0x3F0000 ;
-srec_cat -output /output/${binname}_${packuptime}.bin -binary  /esp32_base/bootloader_qio_80m.bin -binary -offset 0x1000 -fill 0xff 0x0000 0x8000 /esp32_base/partition.bin -binary -offset 0x8000 -fill 0xff 0x8000 0x10000 ./firmware/Ps4-wifi-http.ino.bin -binary -offset 0x10000 -fill 0xff 0x10000 0x100000 ./firmware/data.bin -binary -offset 0x100000
+#srec_cat -output /output/${binname}_${packuptime}.bin -binary  /esp32_base/bootloader_qio_80m.bin -binary -offset 0x1000 -fill 0xff 0x0000 0x8000 /esp32_base/partition.bin -binary -offset 0x8000 -fill 0xff 0x8000 0x10000 ./firmware/Ps4-wifi-http.ino.bin -binary -offset 0x10000 -fill 0xff 0x10000 0x100000 ./firmware/data.bin -binary -offset 0x100000
+srec_cat -output /output/${binname}_${packuptime}.bin \
+-binary -generate 0x0000 0x1000 -constant 0xff /esp32_base/esp.ino.bootloader.bin \
+-binary -offset 0x1000 -fill 0xff 0x1000 0x8000 /esp32_base/esp.ino.partitions.bin \
+-binary -offset 0x8000 -fill 0xff 0x8000 0x10000 ./firmware/Ps4-wifi-http.ino.bin \
+-binary -offset 0x10000 -fill 0xff 0x10000 0x110000  ./firmware/data.bin \
+-binary -offset 0x110000 -fill 0xff 0x110000 0x3F0000;
 if [[ ! -f "/output/${binname}_${packuptime}.bin" ]];then
 echo "编译出错";
 fi;

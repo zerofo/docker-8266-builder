@@ -141,6 +141,7 @@ if [ $? -ne 0 ]; then
     echo "";
     exit;
 fi;
+find / -name "*bootloader*bin"
 #srec_cat -output /output/${binname}_${packuptime}.bin -binary  bootloader_qio_80m.bin -binary -offset 0x1000 -fill 0xff 0x0000 0x8000 Ps4-wifi-http.ino.partitions.bin -binary -offset 0x8000 -fill 0xff 0x8000 0x10000 ./firmware/Ps4-wifi-http.ino.bin -binary -offset 0x10000 0x11000 data.bin -binary -offset 0x10000 -fill 0xff 0x3F0000 ;
 #srec_cat -output /output/${binname}_${packuptime}.bin -binary  /esp32_base/bootloader_qio_80m.bin -binary -offset 0x1000 -fill 0xff 0x0000 0x8000 /esp32_base/partition.bin -binary -offset 0x8000 -fill 0xff 0x8000 0x10000 ./firmware/Ps4-wifi-http.ino.bin -binary -offset 0x10000 -fill 0xff 0x10000 0x100000 ./firmware/data.bin -binary -offset 0x100000
 srec_cat -output /output/${binname}_${packuptime}.bin \

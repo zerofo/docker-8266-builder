@@ -120,7 +120,7 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
     //Serial.println(path+ " setge 2 ");
 
     if (LittleFS.exists(pathComprimido)) path += ".gz";
-    AsyncWebServerResponse* response = request->beginResponse(LITTLEFS, path, mimeType);
+    AsyncWebServerResponse* response = request->beginResponse(LittleFS, path, mimeType);
     if (LittleFS.exists(pathComprimido)) 
      response->addHeader("Content-Encoding", "gzip"); // --> uncomment if your file is GZIPPED 
     request->send(response);

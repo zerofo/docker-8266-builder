@@ -41,7 +41,7 @@ void setup() {
   hasSD = true;
   else{
     hasSD = false;
-    LITTLEFS.begin();
+    LittleFS.begin();
   }
 
   delay(0);
@@ -116,12 +116,12 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
     }
   }
    else{
-    if (LITTLEFS.exists(pathComprimido) || LITTLEFS.exists(path)) {
+    if (LittleFS.exists(pathComprimido) || LittleFS.exists(path)) {
     //Serial.println(path+ " setge 2 ");
 
-    if (LITTLEFS.exists(pathComprimido)) path += ".gz";
+    if (LittleFS.exists(pathComprimido)) path += ".gz";
     AsyncWebServerResponse* response = request->beginResponse(LITTLEFS, path, mimeType);
-    if (LITTLEFS.exists(pathComprimido)) 
+    if (LittleFS.exists(pathComprimido)) 
      response->addHeader("Content-Encoding", "gzip"); // --> uncomment if your file is GZIPPED 
     request->send(response);
     return true;

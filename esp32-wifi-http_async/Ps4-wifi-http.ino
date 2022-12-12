@@ -5,7 +5,7 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <DNSServer.h>
-#include <LITTLEFS.h>
+#include <LittleFS.h>
 #define LED_BUILTIN 2
 const byte PuertoDNS = 53;
 const byte PuertoHTTP = 80;

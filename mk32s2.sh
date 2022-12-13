@@ -153,8 +153,9 @@ fi;
 #-binary -offset 0x1000 -fill 0xff 0x1000 0x8000 ./firmware/Ps4-wifi-http.ino.partitions.bin \
 #-binary -generate 0x0000 0x1000 -constant 0xff /esp32_base/bootloader_qio_80m.bin \
 #-binary -offset 0x1000 -fill 0xff 0x1000 0x8000 /esp32_base/partition.bin \
+#./firmware/Ps4-wifi-http.ino.bootloader.bin \
 srec_cat -output /output/${binname}_${packuptime}.bin \
--binary -generate 0x0000 0x1000 -constant 0xff /esp32_base/bootloader_qio_80m.bin #./firmware/Ps4-wifi-http.ino.bootloader.bin \
+-binary -generate 0x0000 0x1000 -constant 0xff /esp32_base/bootloader_qio_80m.bin \
 -binary -offset 0x1000 -fill 0xff 0x1000 0x8000 /esp32_base/partition.bin \
 -binary -offset 0x8000 -fill 0xff 0x8000 0x10000 ./firmware/Ps4-wifi-http.ino.bin \
 -binary -offset 0x10000 -fill 0xff 0x10000 0x110000  ./firmware/data.bin \

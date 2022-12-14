@@ -87,10 +87,10 @@ void setup() {
   ConfigurarWIFIy();
 
 
-  DNS.setTTL(30);
+  DNS.setTTL(300);
   DNS.setErrorReplyCode(DNSReplyCode::ServerFailure);
   DNS.start(PuertoDNS, "*", Configuracion.IP);
-  WebServer.on("/", HTTP_ANY, [](){});
+  WebServer.on("/", HTTP_ANY, [](AsyncWebServerRequest *request){});
 //   WebServer.on("/", HTTP_ANY, [](AsyncWebServerRequest *request){
 //        String HostIP = request->host();
 //        String path = request->url();

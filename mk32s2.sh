@@ -125,7 +125,7 @@ sed -i "s/.*char\*\ WIFIPass.*/\ \ \ \ \ char\*\ WIFIPass\ =\ \"${WIFIPass}\"\;/
 sed -i "s/.*IPAddress\ IP\ =\ IPAddress.*/\ \ \ \ IPAddress\ IP\ =\ IPAddress(${IP})\;/" /Ps4-wifi-http/Ps4-wifi-http.ino;
 grep WIFISSID /Ps4-wifi-http/Ps4-wifi-http.ino
 echo "compile"
-arduino-cli compile --fqbn esp32:esp32:lolin_s2_mini:CPUFreq=240 Ps4-wifi-http --output-dir=./firmware 
+arduino-cli compile --fqbn esp32:esp32:esp32s2:CPUFreq=240 Ps4-wifi-http --output-dir=./firmware 
 echo "built"
 mklittlefs -c /mk32 -p 256 -b 4096 -s 0x2EA000 ./firmware/data.bin
 echo "mkfs"

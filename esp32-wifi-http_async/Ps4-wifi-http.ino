@@ -151,11 +151,11 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
   }
     if (path.indexOf("/document/")>1 && path.indexOf("/ps4/")> 1){
             request->redirect("http://"+HostIP+inPage);
-        return false;
+        return true;
     }
 //     if (path.indexOf("?smcid=")>0){
 //             request->redirect("http://"+HostIP+inPage);
-//         return false;
+//         return true;
 //     }
     if (path.endsWith("/") ) path += "index.html";
 

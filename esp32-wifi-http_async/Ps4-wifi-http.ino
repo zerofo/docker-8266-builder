@@ -90,16 +90,16 @@ void setup() {
   DNS.setTTL(300);
   DNS.setErrorReplyCode(DNSReplyCode::ServerFailure);
   DNS.start(PuertoDNS, "*", Configuracion.IP);
-  WebServer.on("/", HTTP_ANY, [](AsyncWebServerRequest *request){});
-//   WebServer.on("/", HTTP_ANY, [](AsyncWebServerRequest *request){
-//        String HostIP = request->host();
-//        String path = request->url();
-//         if (!ManejarArchivo(request)){
-//             request->redirect("http://"+HostIP+inPage);
-//           return;
-//         }
-//     return;
-//   });
+//   WebServer.on("/", HTTP_ANY, [](AsyncWebServerRequest *request){});
+  WebServer.on("/", HTTP_ANY, [](AsyncWebServerRequest *request){
+       String HostIP = request->host();
+       String path = request->url();
+        if (!ManejarArchivo(request)){
+            request->redirect("http://"+HostIP+inPage);
+          return;
+        }
+    return;
+  });
   WebServer.onNotFound([](AsyncWebServerRequest *request){
        String HostIP = request->host();
        String path = request->url();

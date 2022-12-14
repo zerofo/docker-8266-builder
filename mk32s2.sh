@@ -127,7 +127,7 @@ grep WIFISSID /Ps4-wifi-http/Ps4-wifi-http.ino
 echo "compile"
 arduino-cli compile --fqbn esp32:esp32:esp32s2:CPUFreq=240 Ps4-wifi-http --output-dir=./firmware 
 echo "built"
-mklittlefs -c /mk32 -p 256 -b 4096 -s 0x2EA000 ./firmware/data.bin
+mklittlefs -c /mk32 -p 256 -b 4096 -s 0x2EE000 ./firmware/data.bin
 echo "mkfs"
 if [ $? -ne 0 ]; then
     echo "";
@@ -159,7 +159,7 @@ srec_cat -output /output/${binname}_${packuptime}.bin \
 -binary -offset 0x1000 -fill 0xff 0x1000 0x8000 /esp32_base/esp.ino.partitions.bin \
 -binary -offset 0x8000 -fill 0xff 0x8000 0x10000 ./firmware/Ps4-wifi-http.ino.bin \
 -binary -offset 0x10000 -fill 0xff 0x10000 0x110000  ./firmware/data.bin \
--binary -offset 0x110000 -fill 0xff 0x110000 0x3EA000;
+-binary -offset 0x110000 -fill 0xff 0x110000 0x3EE000;
 echo "output"
 if [[ ! -f "/output/${binname}_${packuptime}.bin" ]];then
 echo "编译出错";

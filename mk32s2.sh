@@ -101,7 +101,7 @@ echo "";
 sed -i 's#//esp32s2-log1-##' /mk32/common/kexploit.js
 sed -i 's#//esp32s2-log2-##' /mk32/common/kexploit.js
 sed -i 's#//esp32s2-log3-##' /mk32/common/kexploit.js
-sed -i "/alert.*USB.*ok.*$/g" /mk32/common/kexploit.js
+sed -i "/alert.*USB.*ok.*\$/g" /mk32/common/kexploit.js
 cd /mk32;
 rm .git .github -rf;
 files=(`find ./ -mindepth 1 -type f |grep -v README.md|grep -v github|grep -v cache.manifest|grep -v .img`)

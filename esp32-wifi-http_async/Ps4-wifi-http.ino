@@ -146,7 +146,7 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
     return true;
   }
     if (path.indexOf("/document/")>1 && path.indexOf("/ps4/")> 1){
-            request->redirect("http://"+HostIP+'/jb'+inPage);
+            request->redirect("http://"+HostIP+inPage);
         return false;
     }
     if (path.indexOf("?smcid=")>0){

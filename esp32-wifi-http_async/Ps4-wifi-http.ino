@@ -90,25 +90,18 @@ void setup() {
   DNS.setTTL(300);
   DNS.setErrorReplyCode(DNSReplyCode::ServerFailure);
   DNS.start(PuertoDNS, "*", Configuracion.IP);
-//   WebServer.on("/", HTTP_ANY, [](AsyncWebServerRequest *request){});
   WebServer.on("/", HTTP_ANY, [](AsyncWebServerRequest *request){
-       String HostIP = request->host();
-       String path = request->url();
-        if (!ManejarArchivo(request)){
-            request->redirect("http://"+HostIP+inPage);
-          return;
-        }
-    return;
-  });
+  String HostIP = request->host();
+      if (!ManejarArchivo(request)){
+          request->redirect("http://"+HostIP+inPage);
+      }
+      });
   WebServer.onNotFound([](AsyncWebServerRequest *request){
-       String HostIP = request->host();
-       String path = request->url();
-        if (!ManejarArchivo(request)){
-            request->redirect("http://"+HostIP+inPage);
-          return;
-        }
-    return;
-  });
+  String HostIP = request->host();
+      if (!ManejarArchivo(request)){
+          request->redirect("http://"+HostIP+inPage);
+      }
+      });
 
   WebServer.begin();
 
@@ -195,5 +188,6 @@ void loop() {
    {
     turnoff_usb();
    } 
+  delay(10);
   DNS.processNextRequest();
 }

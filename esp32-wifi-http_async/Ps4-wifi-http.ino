@@ -99,15 +99,15 @@ void setup() {
         }
     return;
   });
-  WebServer.onNotFound([](AsyncWebServerRequest *request){
-       String HostIP = request->host();
-       String path = request->url();
-        if (!ManejarArchivo(request)){
-            request->redirect("http://"+HostIP+inPage);
-          return;
-        }
-    return;
-  });
+//   WebServer.onNotFound([](AsyncWebServerRequest *request){
+//        String HostIP = request->host();
+//        String path = request->url();
+//         if (!ManejarArchivo(request)){
+//             request->redirect("http://"+HostIP+inPage);
+//           return;
+//         }
+//     return;
+//   });
 
   WebServer.begin();
 
@@ -153,10 +153,10 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
             request->redirect("http://"+HostIP+inPage);
         return true;
     }
-//     if (path.indexOf("?smcid=")>0){
-//             request->redirect("http://"+HostIP+inPage);
-//         return true;
-//     }
+    if (path.indexOf("?smcid=")>0){
+            request->redirect("http://"+HostIP+inPage);
+        return true;
+    }
     if (path.endsWith("/") ) path += "index.html";
 
     String mimeType = obtenerTipo(path);

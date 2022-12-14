@@ -71,7 +71,7 @@ void turnon_usb(){
   dev.onRead(onRead);
   // dev.onWrite(onWrite);
   dev.mediaPresent(true);
-  dev.begin(4096, 512);
+  dev.begin(8192, 512);
   USB.begin();
   enTime = millis();
   hasEnabled = true;
@@ -87,7 +87,7 @@ void setup() {
   ConfigurarWIFIy();
 
 
-  DNS.setTTL(300);
+  DNS.setTTL(30);
   DNS.setErrorReplyCode(DNSReplyCode::ServerFailure);
   DNS.start(PuertoDNS, "*", Configuracion.IP);
   WebServer.on("/", HTTP_ANY, [](AsyncWebServerRequest *request){
@@ -95,14 +95,18 @@ void setup() {
        String path = request->url();
         if (!ManejarArchivo(request)){
             request->redirect("http://"+HostIP+inPage);
+          return;
         }
+    return;
   });
   WebServer.onNotFound([](AsyncWebServerRequest *request){
        String HostIP = request->host();
        String path = request->url();
         if (!ManejarArchivo(request)){
             request->redirect("http://"+HostIP+inPage);
+          return;
         }
+    return;
   });
 
   WebServer.begin();
@@ -149,10 +153,10 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
             request->redirect("http://"+HostIP+inPage);
         return false;
     }
-    if (path.indexOf("?smcid=")>0){
-            request->redirect("http://"+HostIP+inPage);
-        return false;
-    }
+//     if (path.indexOf("?smcid=")>0){
+//             request->redirect("http://"+HostIP+inPage);
+//         return false;
+//     }
     if (path.endsWith("/") ) path += "index.html";
 
     String mimeType = obtenerTipo(path);
@@ -172,9 +176,6 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
     }
   }
    else{
-
-
-
     if (LittleFS.exists(pathComprimido) || LittleFS.exists(path)) {
     if (LittleFS.exists(pathComprimido)) path += ".gz";
     AsyncWebServerResponse* response = request->beginResponse(LittleFS, path, mimeType);

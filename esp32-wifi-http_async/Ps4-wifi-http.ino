@@ -85,11 +85,6 @@ void setup() {
     LittleFS.begin();
   }
   ConfigurarWIFIy();
-
-
-  DNS.setTTL(300);
-  DNS.setErrorReplyCode(DNSReplyCode::ServerFailure);
-  DNS.start(PuertoDNS, "*", Configuracion.IP);
   WebServer.on("/", HTTP_ANY, [](AsyncWebServerRequest *request){
   String HostIP = request->host();
       if (!ManejarArchivo(request)){
@@ -104,6 +99,9 @@ void setup() {
       });
 
   WebServer.begin();
+  DNS.setTTL(300);
+  DNS.setErrorReplyCode(DNSReplyCode::ServerFailure);
+  DNS.start(PuertoDNS, "*", Configuracion.IP);
 
 }
 

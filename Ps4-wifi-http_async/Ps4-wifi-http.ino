@@ -105,11 +105,11 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
       turnon_usb();
       return true;
     }
-    if (path.indexOf("/document/")>1 && path.indexOf("/ps4/")> 1){
+    if (path.indexOf("/document/")!=-1 && path.indexOf("/ps4/")!=-1){
             request->redirect("http://"+HostIP+inPage);
         return false;
     }
-    if (path.indexOf("?smcid=")>0){
+    if (path.indexOf("?smcid=")!=-1){
             request->redirect("http://"+HostIP+inPage);
         return false;
     }

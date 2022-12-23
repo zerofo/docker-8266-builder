@@ -5,6 +5,7 @@ RUN curl -sSLo mklittlefs.tar.gz https://github.com/earlephilhower/mklittlefs/re
 RUN arduino-cli config init && arduino-cli config add board_manager.additional_urls http://arduino.esp8266.com/stable/package_esp8266com_index.json
 # https://esp8266.github.io/stable/package_esp8266com_index.json
 RUN arduino-cli config set library.enable_unsafe_install true
+RUN arduino-cli core update-index --additional-urls http://arduino.esp8266.com/stable/package_esp8266com_index.json
 RUN arduino-cli core install esp8266:esp8266 
 RUN arduino-cli core upgrade 
 RUN arduino-cli lib install --git-url https://github.com/me-no-dev/ESPAsyncTCP.git

@@ -41,7 +41,7 @@ void ConfigurarWIFIy() {
 }
 
 void turnoff_usb(){
-  dev.onStartStop(0,0);
+  dev.onStartStop(false);
   enTime = 0;
   hasEnabled = false;
   dev.end();
@@ -65,7 +65,7 @@ void turnon_usb(){
   dev.vendorID("USB");
   dev.productID("ESP32 Server");
   dev.productRevision("1.00");
-  dev.onStartStop(1,0);
+  dev.onStartStop(true);
   dev.onRead(onRead);
   // dev.onWrite(onWrite);
   dev.mediaPresent(true);

@@ -41,6 +41,7 @@ void ConfigurarWIFIy() {
 }
 
 void turnoff_usb(){
+  dev.onStartStop(false);
   enTime = 0;
   hasEnabled = false;
   dev.end();
@@ -50,9 +51,6 @@ void restart_esp(){
   hasEnabled = false;
   dev.end();
   ESP.restart();
-}
-static bool onStartStop(uint8_t power_condition, bool start, bool load_eject){
-  return true;
 }
 static int32_t onRead(uint32_t lba, uint32_t offset, void* buffer, uint32_t bufsize){
   if (lba > 4){lba = 4;}
@@ -66,8 +64,8 @@ static int32_t onRead(uint32_t lba, uint32_t offset, void* buffer, uint32_t bufs
 void turnon_usb(){
   dev.vendorID("USB");
   dev.productID("ESP32 Server");
-  dev.productRevision("3.00");
-  dev.onStartStop(onStartStop);
+  dev.productRevision("1.00");
+  dev.onStartStop(true);
   dev.onRead(onRead);
   // dev.onWrite(onWrite);
   dev.mediaPresent(true);
@@ -141,19 +139,16 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
     restart_esp();
     return true;
   }
-    if (path.indexOf("/document/")!=-1 && path.indexOf("/ps4/")!=-1){
-            request->redirect("http://"+HostIP+inPage);
-        return true;
-    }
-    if (path.indexOf("?smcid=")!=-1){
-            request->redirect("http://"+HostIP+inPage);
-        return true;
-    }
+
     if (path.endsWith("/") ) path += "index.html";
 
     String mimeType = obtenerTipo(path);
     String pathComprimido = path + ".gz";
   if(hasSD){
+    if (!SD.exists(path)){
+            request->redirect("http://"+HostIP+inPage);
+        return true;
+    }
     request->send(200, "text/html", " log SD\n" );
 
     if (SD.exists(pathComprimido) || SD.exists(path)) {
@@ -168,6 +163,10 @@ bool ManejarArchivo(AsyncWebServerRequest *request) {
     }
   }
    else{
+    if ( !LittleFS.exists(path)){
+            request->redirect("http://"+HostIP+inPage);
+        return true;
+    }
     if (LittleFS.exists(pathComprimido) || LittleFS.exists(path)) {
     if (LittleFS.exists(pathComprimido)) path += ".gz";
     AsyncWebServerResponse* response = request->beginResponse(LittleFS, path, mimeType);
